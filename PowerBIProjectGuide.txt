@@ -1,8 +1,8 @@
-# Power BI Project Guide: From Installation to Dashboard Creation
+Power BI Project Guide: From Installation to Dashboard Creation
 
 This guide provides step-by-step instructions for setting up and creating a Power BI project, from installation to dashboard creation.
 
-## 1. Install Power BI
+1. Install Power BI
 
 1. Go to the official Microsoft Power BI website (https://powerbi.microsoft.com).
 2. Click on the "Products" menu and select "Power BI Desktop".
@@ -10,7 +10,7 @@ This guide provides step-by-step instructions for setting up and creating a Powe
 4. Once downloaded, run the installer and follow the on-screen instructions.
 5. After installation, launch Power BI Desktop.
 
-## 2. Load Data from SQL
+2. Load Data from SQL
 
 1. In Power BI Desktop, click on "Get Data" in the Home ribbon.
 2. Select "SQL Server" from the list of data sources.
@@ -19,7 +19,7 @@ This guide provides step-by-step instructions for setting up and creating a Powe
 5. Select the tables you want to import or write a custom SQL query.
 6. Click "Load" to import the data into Power BI.
 
-## 3. Connect Tables and Assign Relationships
+3. Connect Tables and Assign Relationships
 
 1. Go to the "Model" view in Power BI Desktop.
 2. Drag and drop to connect related fields between tables.
@@ -27,19 +27,17 @@ This guide provides step-by-step instructions for setting up and creating a Powe
 4. Ensure that the relationships are set to the correct cardinality (one-to-many, many-to-one, etc.).
 5. Verify that the relationships are active by checking the solid line between tables.
 
-## 4. Create New Columns with DAX Queries
+4. Create New Columns with DAX Queries
 
 1. Go to the "Data" view in Power BI Desktop.
 2. Select the table where you want to add a new column.
 3. Click on "New Column" in the Home ribbon.
 4. In the formula bar, enter your DAX query. For example:
-   ```
    Total Sales = SUM(Sales[Amount])
-   ```
 5. Press Enter to create the new column.
 6. Repeat this process for any additional calculated columns you need.
 
-## 5. Create a Dashboard in Report View
+5. Create a Dashboard in Report View
 
 1. Switch to the "Report" view in Power BI Desktop.
 2. From the Visualizations pane, select the type of chart or graph you want to add.
@@ -49,7 +47,7 @@ This guide provides step-by-step instructions for setting up and creating a Powe
 6. Use slicers and filters to make the dashboard interactive.
 7. Add text boxes to provide context or explanations for your visuals.
 
-## Getting Started
+Getting Started
 
 To begin working on this Power BI project:
 
