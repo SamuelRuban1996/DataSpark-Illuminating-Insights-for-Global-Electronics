@@ -66,7 +66,8 @@ pip install -r requirements.txt
 - app.py: Main Streamlit application code.
 - data/: Folder containing all the datasets.
 - README.md: Project documentation.
-- requirements.txt: Python dependencies.
+- requirements.txt: Python dependencies. 
+- PowerBIProjectGuide.txt : Power BI Project Guide: From Installation to Dashboard Creation
 
 ## Requirements
 - Python 3.8+
