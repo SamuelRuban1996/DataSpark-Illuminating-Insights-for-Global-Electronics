@@ -63,16 +63,17 @@ pip install -r requirements.txt
    streamlit run app.py
 
 ## Project Structure
-app.py: Main Streamlit application code.
-data/: Folder containing all the datasets.
-README.md: Project documentation.
-requirements.txt: Python dependencies.
+- app.py: Main Streamlit application code.
+- data/: Folder containing all the datasets.
+- README.md: Project documentation.
+- requirements.txt: Python dependencies.
 
 ## Requirements
-Python 3.8+
-MySQL Server
-Power BI/Tableau (for data visualization)
-Contributing
+- Python 3.8+
+- MySQL Server
+- Power BI/Tableau (for data visualization)
+
+## Contributing
 Feel free to submit issues or pull requests if you have suggestions or improvements.
 
 ## License
