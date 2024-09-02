@@ -68,6 +68,7 @@ pip install -r requirements.txt
 - README.md: Project documentation.
 - requirements.txt: Python dependencies. 
 - PowerBIProjectGuide.txt : Power BI Project Guide: From Installation to Dashboard Creation
+- Global_Electronics_EDA_Report : Exploratory Data Analysis (EDA) report for Global Electronics
 
 ## Requirements
 - Python 3.8+
