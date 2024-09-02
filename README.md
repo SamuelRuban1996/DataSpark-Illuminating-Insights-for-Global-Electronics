@@ -50,31 +50,31 @@ The project will culminate in a comprehensive EDA report featuring clean and int
    git clone https://github.com/yourusername/dataspark.git
    cd dataspark
 
-2. **Create and activate a virtual environment (optional but recommended):
+2. **Create and activate a virtual environment (optional but recommended):**
 
 python3 -m venv venv
 source venv/bin/activate  # On Windows use `venv\Scripts\activate`
 
-3. **Install the required Python packages:
+3. **Install the required Python packages:**
 
 pip install -r requirements.txt
 
-4. **Run the Streamlit app:
+4. **Run the Streamlit app:**
    streamlit run app.py
 
-Project Structure
+## Project Structure
 app.py: Main Streamlit application code.
 data/: Folder containing all the datasets.
 README.md: Project documentation.
 requirements.txt: Python dependencies.
 
-Requirements
+## Requirements
 Python 3.8+
 MySQL Server
 Power BI/Tableau (for data visualization)
 Contributing
 Feel free to submit issues or pull requests if you have suggestions or improvements.
 
-License
+## License
 This project is licensed under the MIT License.
 
