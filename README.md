@@ -68,6 +68,7 @@ pip install -r requirements.txt
 - README.md: Project documentation.
 - requirements.txt: Python dependencies. 
 - PowerBIProjectGuide.txt : Power BI Project Guide: From Installation to Dashboard Creation
+- DataSpark.pbix - Power BI file containing interactive dashboards
 - Global_Electronics_EDA_Report.txt : Exploratory Data Analysis (EDA) report for Global Electronics
 
 ## Requirements
