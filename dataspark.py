@@ -27,6 +27,7 @@ base64_image = get_base64_of_bin_file(background_image_path)
 
 # Styling part of the Streamlit app 
 # This block defines custom CSS styles to enhance the visual appearance of the app.
+
 st.markdown(
     f"""
     <style>
@@ -73,19 +74,16 @@ st.markdown(
 
 def create_connection():
     """Create a connection to the MySQL database."""
-    # This function initializes a connection to the MySQL database using the credentials provided.
     engine = create_engine(f'mysql+mysqlconnector://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}')
     return engine
 
 def check_table_exists(engine, table_name):
     """Check if a table already exists in the database."""
-    # This function checks if a specific table exists in the database.
     inspector = inspect(engine)
     return inspector.has_table(table_name)
 
 def load_and_clean_stores(filepath):
     """Load and clean Stores.csv."""
-    # This function reads and processes the 'Stores.csv' file, handling missing data and date formatting.
     df = pd.read_csv(filepath)
     df['Square Meters'] = df['Square Meters'].fillna(df['Square Meters'].median())
     df['Open Date'] = pd.to_datetime(df['Open Date'], dayfirst=False, errors='coerce')
@@ -93,7 +91,6 @@ def load_and_clean_stores(filepath):
 
 def load_and_clean_sales(filepath):
     """Load and clean Sales.csv."""
-    # This function reads and processes the 'Sales.csv' file, handling missing data and date formatting.
     df = pd.read_csv(filepath)
     for column in df.columns:
         if df[column].dtype == 'object':
@@ -106,7 +103,6 @@ def load_and_clean_sales(filepath):
 
 def load_and_clean_products(filepath):
     """Load and clean Products.csv."""
-    # This function reads and processes the 'Products.csv' file, handling missing data and converting prices to numeric values.
     df = pd.read_csv(filepath)
     
     for column in ['Unit Price USD', 'Unit Cost USD']:
@@ -126,7 +122,6 @@ def load_and_clean_products(filepath):
 
 def load_and_clean_exchange_rates(filepath):
     """Load and clean Exchange_Rates.csv."""
-    # This function reads and processes the 'Exchange_Rates.csv' file, handling missing data.
     df = pd.read_csv(filepath)
     for column in df.columns:
         if df[column].dtype == 'object':
@@ -139,7 +134,6 @@ def load_and_clean_exchange_rates(filepath):
 
 def load_and_clean_customers(filepath):
     """Load and clean Customers.csv with encoding handling."""
-    # This function reads and processes the 'Customers.csv' file, handling encoding issues and missing data.
     encodings = ['utf-8', 'iso-8859-1', 'cp1252']
     for encoding in encodings:
         try:
@@ -164,12 +158,12 @@ def load_and_clean_customers(filepath):
 
 def load_df_to_sql(df, table_name, engine):
     """Load dataframe into MySQL database if table does not already exist."""
-    # This function loads a DataFrame into a MySQL table, creating the table if it doesn't exist.
     if check_table_exists(engine, table_name):
         return False
     else:
         df.to_sql(name=table_name, con=engine, if_exists='replace', index=False)
         return True
+
 
 # SQL queries
 # These predefined SQL queries will be available for execution within the app.
@@ -267,52 +261,128 @@ queries = {
 def main():
     st.markdown('<h1 class="stTitle">Data Processing and Visualization App</h1>', unsafe_allow_html=True)
 
-    # File paths (obfuscated for security)
+    # File paths
     # These paths point to the CSV files that will be loaded into the app.
     file_paths = {
-        'Stores': '***',  # Enter path of the Stores table
-        'Sales': '***',  # Enter path of the Sales table
-        'Products': '***',  # Enter path of the Products table
-        'Exchange Rates': '***',  # Enter path of the Exchange Rates table
-        'Customers': '***'  # Enter path of the Customers table
+        'stores': '../data/Stores.csv',
+        'sales': '../data/Sales.csv',
+        'products': '../data/Products.csv',
+        'exchange_rates': '../data/Exchange_Rates.csv',
+        'customers': '../data/Customers.csv'
     }
-    
-    # Load and clean data
-    # Each CSV file is loaded, cleaned, and prepared for further processing.
-    stores_df = load_and_clean_stores(file_paths['Stores'])
-    sales_df = load_and_clean_sales(file_paths['Sales'])
-    products_df = load_and_clean_products(file_paths['Products'])
-    exchange_rates_df = load_and_clean_exchange_rates(file_paths['Exchange Rates'])
-    customers_df = load_and_clean_customers(file_paths['Customers'])
-    
-    # Create a database connection
-    # The app establishes a connection to the MySQL database.
+
+    # Create database connection
     engine = create_connection()
+
+    # Initialize session state
+    if 'loaded_files' not in st.session_state:
+        st.session_state.loaded_files = []
+    if 'all_files_loaded' not in st.session_state:
+        st.session_state.all_files_loaded = False
+    if 'data_loaded_to_sql' not in st.session_state:
+        st.session_state.data_loaded_to_sql = False
+    if 'success_message' not in st.session_state:
+        st.session_state.success_message = ""
+    if 'sql_success_messages' not in st.session_state:
+        st.session_state.sql_success_messages = []
+    if 'show_sql_messages' not in st.session_state:
+        st.session_state.show_sql_messages = True
+
     
-    # Load data into MySQL
-    # Cleaned data is loaded into the MySQL database, creating tables if they don't already exist.
-    load_df_to_sql(stores_df, 'Stores', engine)
-    load_df_to_sql(sales_df, 'Sales', engine)
-    load_df_to_sql(products_df, 'Products', engine)
-    load_df_to_sql(exchange_rates_df, 'Exchange_Rates', engine)
-    load_df_to_sql(customers_df, 'Customers', engine)
+    # Dropdown for loading and cleaning data
+    if not st.session_state.all_files_loaded:
+        remaining_files = [file for file in file_paths.keys() if file not in st.session_state.loaded_files]
+        if remaining_files:
+            selected_file = st.selectbox("Select a file to load and clean:", remaining_files, key="file_selector")
+            if st.button("Load and Clean"):
+                file_path = file_paths[selected_file]
+                if selected_file == 'stores':
+                    df = load_and_clean_stores(file_path)
+                elif selected_file == 'sales':
+                    df = load_and_clean_sales(file_path)
+                elif selected_file == 'products':
+                    df = load_and_clean_products(file_path)
+                elif selected_file == 'exchange_rates':
+                    df = load_and_clean_exchange_rates(file_path)
+                elif selected_file == 'customers':
+                    df = load_and_clean_customers(file_path)
+    
+                # Display the success message
+                st.session_state.success_message = f"Successfully loaded and cleaned {selected_file.capitalize()} data."
+                
+                if st.session_state.success_message:
+                    st.markdown(f'<div class="custom-success">{st.session_state.success_message}</div>', unsafe_allow_html=True)
+                    # Clear the success message when the dropdown value changes
+                    if st.session_state.get('file_selector') != st.session_state.get('last_selected_file'):
+                        st.session_state.success_message = ""
+                    st.session_state.last_selected_file = st.session_state.get('file_selector')
+                    
+                # Display the cleaned dataframe
+                st.dataframe(df)
+    
+                # Store the dataframe in session state
+                st.session_state[f'{selected_file}_df'] = df
+                st.session_state.loaded_files.append(selected_file)
+    
+                if len(st.session_state.loaded_files) == len(file_paths):
+                    st.session_state.all_files_loaded = True
+    
+                # No need to rerun immediately, as the dataframe is already displayed
+    else:
+        st.session_state.all_files_loaded = True
+        st.rerun()
+   
 
-    # Select SQL query to execute
-    # Users can select one of the predefined SQL queries to execute.
-    st.markdown('<h2 class="stTitle">Select a query to execute:</h2>', unsafe_allow_html=True)
-    query_selection = st.selectbox('Choose a query', list(queries.keys()))
+    # Load to SQL button
+    if st.session_state.all_files_loaded and not st.session_state.data_loaded_to_sql:
+        if st.button("Load to SQL"):
+            all_loaded = True
+            st.session_state.sql_success_messages = []
+            for file_name in file_paths.keys():
+                if f'{file_name}_df' in st.session_state:
+                    df = st.session_state[f'{file_name}_df']
+                    table_name = file_name.capitalize()
+                    if check_table_exists(engine, table_name):
+                        
+                        st.session_state.sql_success_messages.append(f"Table '{table_name}' already exists in the database.")
+                    else:
+                        load_df_to_sql(df, table_name, engine)
+                        st.session_state.sql_success_messages.append(f"Data loaded into table '{table_name}'.")
+                else:
+                    all_loaded = False
+                    st.error(f"Data for {file_name} is not loaded. Please load all data before proceeding.")
+                    break
+            
+            if all_loaded:
+                st.session_state.data_loaded_to_sql = True
+                st.session_state.show_sql_messages = True
+                st.rerun()
 
-    if query_selection:
-        query = queries[query_selection]
-        st.markdown(f'<h3 class="results-header">{query_selection} Results</h3>', unsafe_allow_html=True)
-        
-        try:
-            with engine.connect() as connection:
-                result = connection.execute(text(query))
-                df_result = pd.DataFrame(result.fetchall(), columns=result.keys())
-                st.dataframe(df_result)
-        except Exception as e:
-            st.markdown(f'<div class="custom-warning">{str(e)}</div>', unsafe_allow_html=True)
+    # Display success messages for SQL loading
+    if st.session_state.show_sql_messages and st.session_state.sql_success_messages:
+        for message in st.session_state.sql_success_messages:
+            if "already exists" in message:
+                st.markdown(f'<div class="custom-warning">{message}</div>', unsafe_allow_html=True)
+            else:
+                st.markdown(f'<div class="custom-success">{message}</div>', unsafe_allow_html=True)
+
+    # Dropdown for SQL queries
+    if st.session_state.data_loaded_to_sql:
+        query_names = list(queries.keys())
+        selected_query = st.selectbox("Select a query to execute:", query_names, key="query_selector")
+
+        if selected_query:
+            # Hide SQL messages when a query is selected
+            st.session_state.show_sql_messages = False
+            
+            query = queries[selected_query]
+            try:
+                with engine.connect() as connection:
+                    df = pd.read_sql_query(text(query), connection)
+                st.markdown(f'<h3 class="results-header">Results for {selected_query}:</h3>', unsafe_allow_html=True)
+                st.dataframe(df)
+            except Exception as e:
+                st.error(f"An error occurred while executing the query: {e}")
 
 if __name__ == '__main__':
     main()
