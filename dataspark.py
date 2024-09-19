@@ -330,7 +330,6 @@ def main():
                 # No need to rerun immediately, as the dataframe is already displayed
     else:
         st.session_state.all_files_loaded = True
-        st.rerun()
    
 
     # Load to SQL button
